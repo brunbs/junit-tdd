@@ -1,6 +1,7 @@
 package service;
 
 import data.UsersRepository;
+import exception.EmailNotificationServiceException;
 import exception.UserServiceException;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,8 @@ public class UserServiceTest {
     UserServiceImpl userService; //Since this service has a dependency, we use InjectMocks so his dependencies are automatically injected by Mockito. In this case, UsersRepository
     @Mock
     UsersRepository usersRepository;
+    @Mock
+    EmailVerificationService emailVerificationService;
     String firstName;
     String lastName;
     String email;
@@ -81,7 +84,22 @@ public class UserServiceTest {
 
         //Act & Assert
         assertThrows(UserServiceException.class, () -> userService.createUser(firstName, lastName, email, password, repeatPassword), "Should have thrown UserServiceException instead");
+    }
 
+    @Test
+    void testCreateUser_whenEmailNotificationExceptionThrown_thriwsUserServiceException() {
+        //Arrange
+        when(usersRepository.save(any(User.class))).thenReturn(true);
+        doThrow(EmailNotificationServiceException.class).when(emailVerificationService).scheduleEmailConfirmation(any(User.class));
+
+        //Act
+        assertThrows(UserServiceException.class, () -> {
+            userService.createUser(firstName, lastName, email, password, repeatPassword);
+        }, "Should have thrown UserServiceException instead");
+
+
+        //Assert
+        verify(emailVerificationService, times(1)).scheduleEmailConfirmation(any(User.class));
     }
 
 }
