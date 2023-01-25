@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import service.Impl.UserServiceImpl;
+
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTest {
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserServiceImpl userService; //Since this service has a dependency, we use InjectMocks so his dependencies are automatically injected by Mockito. In this case, UsersRepository
     @Mock
     UsersRepository usersRepository;
     String firstName;
