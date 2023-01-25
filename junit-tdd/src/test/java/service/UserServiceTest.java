@@ -1,6 +1,7 @@
 package service;
 
 import data.UsersRepository;
+import exception.UserServiceException;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,6 +70,17 @@ public class UserServiceTest {
         }, "Empty first name should have caused an Illegal Argument Exception");
 
         assertEquals(expectedExceptionMessage, exception.getMessage(), "Exception error message is not correct");
+
+    }
+
+    @DisplayName("If save() method causes RuntimeException, a UserServiceException is thrown")
+    @Test
+    void testCreateUser_whenSaveMethodThrowsException_thenThrowsUserServiceException() {
+        //Arrange
+        when(usersRepository.save(any(User.class))).thenThrow(RuntimeException.class);
+
+        //Act & Assert
+        assertThrows(UserServiceException.class, () -> userService.createUser(firstName, lastName, email, password, repeatPassword), "Should have thrown UserServiceException instead");
 
     }
 
