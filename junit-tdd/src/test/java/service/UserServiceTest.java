@@ -91,6 +91,7 @@ public class UserServiceTest {
         //Arrange
         when(usersRepository.save(any(User.class))).thenReturn(true);
         doThrow(EmailNotificationServiceException.class).when(emailVerificationService).scheduleEmailConfirmation(any(User.class));
+        // doNothing().when(emailVerificationService).scheduleEmailConfirmation(any(User.class));  --> this is used to do nothing when void method
 
         //Act
         assertThrows(UserServiceException.class, () -> {
